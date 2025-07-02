@@ -37,52 +37,39 @@
   <img class="cartoon" src="1000090044-removebg-preview.png" alt="knife cat" />
   <h2>You have been sentenced to upload<br>10 cute pictures of yourself</h2>
 
-  <form id="fineForm" action="https://image-upload-to-google-drive.YOUR-USERNAME.repl.co/upload" method="POST" enctype="multipart/form-data">
-    <input type="file" name="images" accept="image/*" multiple required id="photoInput" />
+  <form id="fineForm" method="POST" enctype="multipart/form-data">
+    <input type="file" name="files" accept="image/*" multiple required id="photoInput" />
     <br>
     <button class="submit-btn" type="submit">Upload 10 Pictures</button>
   </form>
 
   <script>
-    document.getElementById('fineForm').addEventListener('submit', async function(e) {
+    document.getElementById('fineForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
       const files = document.getElementById('photoInput').files;
       if (files.length !== 10) {
-        e.preventDefault();
         alert('❌ You must upload exactly 10 images!');
         return;
       }
 
-      // Show basic loading feedback (optional)
-      const btn = document.querySelector('.submit-btn');
-      btn.disabled = true;
-      btn.innerText = 'Uploading...';
-
-      // Let the form submit and wait for response
-      e.preventDefault();
-
       const formData = new FormData();
-      for (let i = 0; i < 10; i++) {
-        formData.append('images', files[i]);
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
       }
 
-      try {
-        const response = await fetch('https://image-upload-to-google-drive.YOUR-USERNAME.repl.co/upload', {
-          method: 'POST',
-          body: formData
-        });
+      const response = await fetch('https://script.google.com/macros/s/AKfycbx7FKH-gRZpB64XBeubH04HewYylFNNolfv_NxynsBke4UYrloR7AbzgdQWi0IpXWbJ/exec', {
+        method: 'POST',
+        body: formData
+      });
 
-        if (response.ok) {
-          alert('✅ Uploaded successfully!');
-          window.location.href = 'PAGE 3.html';
-        } else {
-          const text = await response.text();
-          alert('❌ Upload failed: ' + text);
-        }
-      } catch (err) {
-        alert('❌ Upload error: ' + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Upload 10 Pictures';
+      const result = await response.text();
+
+      if (response.ok) {
+        alert(result);
+        window.location.href = 'PAGE 3.html';
+      } else {
+        alert('❌ Upload failed: ' + result);
       }
     });
   </script>
