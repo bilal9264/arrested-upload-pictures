@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pay Your Fine</title>
+  <style>
+    .cartoon{
+      width: 250px;
+      margin: 0 auto;
+
+    }
+    body {
+      background-color: #f07ca3;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive;
+      padding: 40px;
+    }
+    h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      margin: 20px 0;
+    }
+    .submit-btn {
+      padding: 10px 25px;
+      font-size: 1.1em;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <img class="cartoon" src="1000090044-removebg-preview.png" alt="knife cat" />
+  <h2>you have been sentenced to upload<br>
+      10 cute pictures of yourself
+      </h2>
+  <form id="fineForm">
+    <input type="file" name="photos" accept="image/*" multiple id="photoInput" />
+    <br>
+    <button class="submit-btn" type="submit">Submit</button>
+  </form>
+
+  <script>
+    document.getElementById('fineForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const files = document.getElementById('photoInput').files;
+      if (files.length !== 10) {
+        alert('You cant Upload less than 10 Pictures');
+      } else {
+
+       window.location.href ='PAGE 3.html';
+        // You could redirect or upload files here
+      }
+    });
+  </script>
+</body>
+</html>
