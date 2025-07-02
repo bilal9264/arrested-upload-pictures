@@ -13,6 +13,7 @@
     }
     h2 {
       font-size: 2em;
+      margin-bottom: 20px;
     }
     .submit-btn {
       padding: 10px 25px;
@@ -23,28 +24,19 @@
       border-radius: 10px;
       cursor: pointer;
     }
-    .progress-container {
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #000000;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
       display: none;
-      width: 80%;
-      max-width: 400px;
-      margin: 30px auto;
-      text-align: center;
+      margin: 20px auto;
     }
-    .progress-bar {
-      width: 100%;
-      background-color: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 20px;
-      width: 0%;
-      background-color: #2196F3;
-      transition: width 0.3s ease;
-    }
-    .progress-text {
-      margin-top: 10px;
-      font-weight: bold;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -54,24 +46,19 @@
   <form 
     id="fineForm"
     method="POST"
-    action="https://script.google.com/macros/s/AKfycbx7FKH-gRZpB64XBeubH04HewYylFNNolfv_NxynsBke4UYrloR7AbzgdQWi0IpXWbJ/exec"
     enctype="multipart/form-data"
+    action="https://script.google.com/macros/s/AKfycbzUVK0ISAxrhrGpVMxN5jRxin93rVHFajlA5sXq1-U/dev"
     target="hidden_iframe"
     onsubmit="return startUpload()"
   >
     <input type="file" name="files" accept="image/*" multiple required id="photoInput" />
     <br><br>
-    <button type="submit" class="submit-btn">Upload 10 Pictures</button>
+    <button class="submit-btn" type="submit">Upload 10 Pictures</button>
   </form>
 
-  <div class="progress-container" id="progressContainer">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-text" id="progressText">Uploading...</div>
-  </div>
+  <div class="loader" id="loader"></div>
 
-  <iframe name="hidden_iframe" style="display:none;" onload="uploadComplete()"></iframe>
+  <iframe name="hidden_iframe" style="display: none;" onload="uploadComplete()"></iframe>
 
   <script>
     let uploading = false;
@@ -83,37 +70,20 @@
         return false;
       }
 
-      document.getElementById('progressContainer').style.display = 'block';
-      document.getElementById('progressText').innerText = 'Uploading...';
-      document.getElementById('progressFill').style.width = '0%';
-
+      // Show loading spinner
+      document.getElementById('loader').style.display = 'block';
       uploading = true;
-
-      // Fake progress animation
-      let percent = 0;
-      const interval = setInterval(() => {
-        if (!uploading) {
-          clearInterval(interval);
-          return;
-        }
-        percent += Math.random() * 5;
-        if (percent >= 95) percent = 95;
-        document.getElementById('progressFill').style.width = percent + '%';
-      }, 300);
-
-      return true; // allow form to submit
+      return true;
     }
 
     function uploadComplete() {
       if (!uploading) return;
-
       uploading = false;
-      document.getElementById('progressFill').style.width = '100%';
-      document.getElementById('progressText').innerText = '✅ Upload Complete! Redirecting...';
 
-      setTimeout(() => {
-        window.location.href = 'PAGE 3.html';
-      }, 1500);
+      // Hide loader and redirect
+      document.getElementById('loader').style.display = 'none';
+      alert('✅ Upload Complete! Redirecting...');
+      window.location.href = 'PAGE 3.html';
     }
   </script>
 </body>
