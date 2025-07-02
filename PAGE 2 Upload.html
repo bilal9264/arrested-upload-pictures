@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pay Your Fine</title>
   <style>
-    .cartoon{
+    .cartoon {
       width: 250px;
       margin: 0 auto;
-
     }
     body {
       background-color: #f07ca3;
@@ -36,25 +35,54 @@
 </head>
 <body>
   <img class="cartoon" src="1000090044-removebg-preview.png" alt="knife cat" />
-  <h2>you have been sentenced to upload<br>
-      10 cute pictures of yourself
-      </h2>
-  <form id="fineForm">
-    <input type="file" name="photos" accept="image/*" multiple id="photoInput" />
+  <h2>You have been sentenced to upload<br>10 cute pictures of yourself</h2>
+
+  <form id="fineForm" action="https://image-upload-to-google-drive.YOUR-USERNAME.repl.co/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="images" accept="image/*" multiple required id="photoInput" />
     <br>
-    <button class="submit-btn" type="submit">Submit</button>
+    <button class="submit-btn" type="submit">Upload 10 Pictures</button>
   </form>
 
   <script>
-    document.getElementById('fineForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    document.getElementById('fineForm').addEventListener('submit', async function(e) {
       const files = document.getElementById('photoInput').files;
       if (files.length !== 10) {
-        alert('You cant Upload less than 10 Pictures');
-      } else {
+        e.preventDefault();
+        alert('❌ You must upload exactly 10 images!');
+        return;
+      }
 
-       window.location.href ='PAGE 3.html';
-        // You could redirect or upload files here
+      // Show basic loading feedback (optional)
+      const btn = document.querySelector('.submit-btn');
+      btn.disabled = true;
+      btn.innerText = 'Uploading...';
+
+      // Let the form submit and wait for response
+      e.preventDefault();
+
+      const formData = new FormData();
+      for (let i = 0; i < 10; i++) {
+        formData.append('images', files[i]);
+      }
+
+      try {
+        const response = await fetch('https://image-upload-to-google-drive.YOUR-USERNAME.repl.co/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          alert('✅ Uploaded successfully!');
+          window.location.href = 'PAGE 3.html';
+        } else {
+          const text = await response.text();
+          alert('❌ Upload failed: ' + text);
+        }
+      } catch (err) {
+        alert('❌ Upload error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Upload 10 Pictures';
       }
     });
   </script>
