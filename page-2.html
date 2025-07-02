@@ -3,12 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pay Your Fine</title>
+  <title>Upload Cute Pictures</title>
   <style>
-    .cartoon {
-      width: 250px;
-      margin: 0 auto;
-    }
     body {
       background-color: #f07ca3;
       text-align: center;
@@ -17,10 +13,6 @@
     }
     h2 {
       font-size: 2em;
-      margin-bottom: 20px;
-    }
-    input[type="file"] {
-      margin: 20px 0;
     }
     .submit-btn {
       padding: 10px 25px;
@@ -31,52 +23,98 @@
       border-radius: 10px;
       cursor: pointer;
     }
+    .progress-container {
+      display: none;
+      width: 80%;
+      max-width: 400px;
+      margin: 30px auto;
+      text-align: center;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 20px;
+      width: 0%;
+      background-color: #2196F3;
+      transition: width 0.3s ease;
+    }
+    .progress-text {
+      margin-top: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <img class="cartoon" src="1000090044-removebg-preview.png" alt="knife cat" />
-  <h2>You have been sentenced to upload<br>10 cute pictures of yourself</h2>
+  <h2>You are sentenced to upload<br>10 cute pictures of yourself</h2>
 
-  <form id="fineForm" method="POST" enctype="multipart/form-data">
+  <form 
+    id="fineForm"
+    method="POST"
+    action="https://script.google.com/macros/s/AKfycbx7FKH-gRZpB64XBeubH04HewYylFNNolfv_NxynsBke4UYrloR7AbzgdQWi0IpXWbJ/exec"
+    enctype="multipart/form-data"
+    target="hidden_iframe"
+    onsubmit="return startUpload()"
+  >
     <input type="file" name="files" accept="image/*" multiple required id="photoInput" />
-    <br>
-    <button class="submit-btn" type="submit">Upload 10 Pictures</button>
+    <br><br>
+    <button type="submit" class="submit-btn">Upload 10 Pictures</button>
   </form>
 
-  <script>
-    document.getElementById('fineForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text" id="progressText">Uploading...</div>
+  </div>
 
+  <iframe name="hidden_iframe" style="display:none;" onload="uploadComplete()"></iframe>
+
+  <script>
+    let uploading = false;
+
+    function startUpload() {
       const files = document.getElementById('photoInput').files;
       if (files.length !== 10) {
-        alert('❌ You must upload exactly 10 images!');
-        return;
+        alert('❌ You must upload exactly 10 pictures!');
+        return false;
       }
 
-      const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        // Append each file under a unique key like file0, file1...
-        formData.append("file" + i, files[i]);
-      }
+      document.getElementById('progressContainer').style.display = 'block';
+      document.getElementById('progressText').innerText = 'Uploading...';
+      document.getElementById('progressFill').style.width = '0%';
 
-      try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbx7FKH-gRZpB64XBeubH04HewYylFNNolfv_NxynsBke4UYrloR7AbzgdQWi0IpXWbJ/exec', {
-          method: 'POST',
-          body: formData
-        });
+      uploading = true;
 
-        const result = await response.text();
-
-        if (response.ok) {
-          alert(result);
-          window.location.href = 'PAGE 3.html';
-        } else {
-          alert('❌ Upload failed: ' + result);
+      // Fake progress animation
+      let percent = 0;
+      const interval = setInterval(() => {
+        if (!uploading) {
+          clearInterval(interval);
+          return;
         }
-      } catch (err) {
-        alert('❌ Error: ' + err.message);
-      }
-    });
+        percent += Math.random() * 5;
+        if (percent >= 95) percent = 95;
+        document.getElementById('progressFill').style.width = percent + '%';
+      }, 300);
+
+      return true; // allow form to submit
+    }
+
+    function uploadComplete() {
+      if (!uploading) return;
+
+      uploading = false;
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressText').innerText = '✅ Upload Complete! Redirecting...';
+
+      setTimeout(() => {
+        window.location.href = 'PAGE 3.html';
+      }, 1500);
+    }
   </script>
 </body>
 </html>
